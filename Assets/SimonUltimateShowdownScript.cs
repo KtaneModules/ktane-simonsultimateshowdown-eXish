@@ -158,6 +158,8 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             tashaLights[i].enabled = false;
             simonsLights[i].enabled = false;
         }
+        colorblindActive = colorblind.ColorblindModeActive;
+        Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Colorblind Mode: {1}", moduleId, colorblindActive);
         ButtonsDown();
         GetComponent<KMBombModule>().OnActivate += OnActivate;
     }
@@ -255,8 +257,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
     }
 
     void Start () {
-        colorblindActive = colorblind.ColorblindModeActive;
-        Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Colorblind Mode: {1}", moduleId, colorblindActive);
         ImportantStartupStuff();
         //Randomize modules of buttons
         if (resetButtons)
@@ -2000,7 +2000,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             string[] neededs3temp = { "blue", "green", "pink" };
             neededs1 = neededs1temp;
             neededs2 = neededs2temp;
-            neededs3 = neededs1temp;
+            neededs3 = neededs3temp;
             actualleftcols = leftcols1;
             if (pos == 0 || pos == 1)
             {
@@ -2026,7 +2026,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             string[] neededs3temp = { "yellow", "blue", "green" };
             neededs1 = neededs1temp;
             neededs2 = neededs2temp;
-            neededs3 = neededs1temp;
+            neededs3 = neededs3temp;
             actualleftcols = leftcols2;
             if (pos == 0 || pos == 1)
             {
@@ -2052,7 +2052,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             string[] neededs3temp = { "pink", "pink", "blue" };
             neededs1 = neededs1temp;
             neededs2 = neededs2temp;
-            neededs3 = neededs1temp;
+            neededs3 = neededs3temp;
             actualleftcols = leftcols3;
             if (pos == 5)
             {
@@ -2078,7 +2078,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             string[] neededs3temp = { "yellow", "green", "blue" };
             neededs1 = neededs1temp;
             neededs2 = neededs2temp;
-            neededs3 = neededs1temp;
+            neededs3 = neededs3temp;
             actualleftcols = leftcols4;
             if (pos == 2)
             {

@@ -3681,9 +3681,10 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 stagesBases[i].SetActive(true);
             }
         }
-        for (int g = stage; g < 4; g++)
+        int start = stage;
+        for (int g = start; g < 4; g++)
         {
-            while (cooldown) { yield return new WaitForSeconds(0.1f); yield return true; }
+            while (cooldown || resetButtons) { yield return new WaitForSeconds(0.1f); yield return true; }
             if (allSame)
             {
                 allSamePresses[0] = false;
@@ -3739,7 +3740,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             }
             else
             {
-                int temp = correctColorsModified.Count;
+                int temp = correctColorsModified.Count();
                 for (int k = 0; k < temp; k++)
                 {
                     List<int> possiblePresses = new List<int>();

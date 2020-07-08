@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <title>Simon's Ultimate Showdown — Keep Talking and Nobody Explodes Module</title>
     <meta name="viewport" content="initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/font.css">
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" type="text/css" href="css/font.css">
     <script src="js/ktane-utils.js"></script>
 </head>
 <body>
@@ -25,21 +25,18 @@
 
 					<p>This module has six buttons which may be paired with other extremities, all of which are randomly selected from any "simon" module in this game. Each button is colored with a random color from their respective module. The buttons (or extremities) will also be flashing a sequence of initially three flashes.</p>
 					
-					<p>In order to solve this module follow the steps below and on the following pages to find out which color(s) need to be pressed for each flash in the sequence. The correct press(es) corresponding to the first flash must be pressed first and then the ones for the seconds flash and so on. Once all correct presses have been made the module will again randomize the colors on each button with a random color from their respective module. It will also add one more flash to the sequence but the positions of the previous flashes in the sequence will stay the same. After all correct button(s) have been pressed for a sequence of five flashes, the module will disarm.</p>
+					<p>In order to solve this module follow the steps below and on the following pages to find out which color(s) need to be pressed for each flash in the sequence. The correct press(es) corresponding to the first flash must be pressed first and then the ones for the second flash and so on. Once all correct presses have been made the module will again randomize the colors on each button with a random color from their respective module. It will also add one more flash to the sequence but the positions of the previous flashes in the sequence will stay the same. After all correct button(s) have been pressed for a sequence of five flashes, the module will disarm.</p>
 					
 					<p>If at any point an incorrect press is made a strike will be recorded and the module WILL reset that stage.</p>
 					
 					<h4>Step 1: Identifying the modules the buttons/extremities are from</h4>
 					
 					<ul>
-						<!--<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Samples.html">Simon Samples</a> will be a quarter circle, always colored gray/grey, and will not flash with a light but instead the highlight will flash</li>
-						<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Says.html">Simon Says</a> will be a diamond and colored blue, green, red, or yellow</li>
-						--><li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Scrambles.html">Simon Scrambles</a> will be a square and colored blue, green, red, or yellow</li><!--
-						--><li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Screams.html">Simon Screams</a> will be a kite and colored blue, green, red, yellow, orange, or purple</li>
+						<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Scrambles.html">Simon Scrambles</a> will be a square and colored blue, green, red, or yellow</li>
+						<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Screams.html">Simon Screams</a> will be a kite and colored blue, green, red, yellow, orange, or purple</li>
 						<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Simons.html">Simon Simons</a> will be a small diamond with a black backing and colored blue, green, red, or yellow</li>
-						<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Stops.html">Simon Stops</a> will be an octagon with a black backing and colored blue, green, red, yellow, orange, or purple</li><!--
-						<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Selects.html">Simon Selects</a> will be a quarter donut and colored blue, green, red, yellow, orange, purple, cyan, or magenta</li>-->
-						<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%E2%80%99s%20Stages.html">Simon's Stages</a> will be a half circle with a letter on it and paired with a light that is also a half circle that can be colored red, blue, yellow, orange, magenta, green, pink, lime, cyan, or white</li>
+						<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%20Stops.html">Simon Stops</a> will be an octagon with a black backing and colored blue, green, red, yellow, orange, or purple</li>
+						<li>A button from <a href="https://ktane.timwi.de/HTML/Simon%E2%80%99s%20Stages.html">Simon's Stages</a>/<a href="https://ktane.timwi.de/HTML/Simon%20Stages.html">Simon Stages</a> will be a half circle with a letter on it and paired with a light that is also a half circle that can be colored red, blue, yellow, orange, magenta, green, pink, lime, cyan, or white</li>
 						<li>A button from <a href="https://ktane.timwi.de/HTML/Tasha%20Squeals.html">Tasha Squeals</a> will be a diamond with a black backing and colored blue, green, pink, or yellow</li>
 					 </ul>
 					 <p>NOTE: All sounds made by the buttons (only go off after first press) are the same ones from their respective modules.</p>
@@ -56,9 +53,9 @@
 					<p>If the flashing button or extremity is from...</p>
 					
 					<ul>
-						<li><a href="https://ktane.timwi.de/HTML/Simon%E2%80%99s%20Stages.html">Simon's Stages</a></li>
+						<li><a href="https://ktane.timwi.de/HTML/Simon%E2%80%99s%20Stages.html">Simon's Stages</a>/<a href="https://ktane.timwi.de/HTML/Simon%20Stages.html">Simon Stages</a></li>
 						<ol>
-							<li>Take the color of the flash and find the corresponding rule in the table in this module's manual</li>
+							<li>Take the color of the flash and find the corresponding rule in the table in either modules' manuals</li>
 							<li>Use the rule on the entire flashing sequence to find out which colors need to be pressed for this flash</li>
 						</ol>
 						<p>NOTE: Colors opposite the sequence when referenced for this module refer to the colors of the buttons directly opposite the ones that flashed</p>
@@ -106,8 +103,8 @@
 						<li><a href="https://ktane.timwi.de/HTML/Tasha%20Squeals.html">Tasha Squeals</a></li>
 						<ol>
 							<li>Use this module's manual to find the first table where only one of the rules applies, but not both (XOR)</li>
-							<li>Find the column to use in the correct table using the position of the flashing button</li>
-							<li>Find the color of the button that flashed in this column</li>
+							<li>Find the column to use in the correct table using the position of the flashing button (if the position is not present pink is the color that needs to be pressed for this flash)</li>
+							<li>Find the color of the button that flashed in this column (if the color is not present pink is the color that needs to be pressed for this flash)</li>
 							<li>The color in the leftmost column on the same row as the color of the button that flashed is the color that needs to be pressed for this flash</li>
 							<p>NOTES: The top left and top right buttons count as the position "Top" in this module's manual. The bottom left and bottom right buttons count as the position "Bottom" in this module's manual. The word input should be treated as the word flash when checking the rules. The rules checking for a pink button on "the diamond" are just checking for whether a pink button is in those positions on the module.</p>
 						</ol>

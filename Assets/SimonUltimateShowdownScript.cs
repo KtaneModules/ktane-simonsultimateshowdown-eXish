@@ -14,7 +14,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
     public GameObject[] cbtexts;
     private bool colorblindActive;
 
-    private string[] modulesNames = { "Simon's Stages", "Simon Scrambles", "Simon Screams", "Simon Stores (coming to a module near you Kappa)", "Simon Stops", "Tasha Squeals", "Simon Simons" };
+    private string[] modulesNames = { "Simon's Stages/Simon Stages", "Simon Scrambles", "Simon Screams", "Simon Stores (coming to a module near you Kappa)", "Simon Stops", "Tasha Squeals", "Simon Simons" };
     private int[] modulesOfButtons = { -1, -1, -1, -1, -1, -1 };
     private string[] colorsOfButtons = { "", "", "", "", "", "" };
     private List<string> correctColors = new List<string>();
@@ -522,7 +522,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             {
                 if (modulesOfButtons[buttonsFlashing[i]] == 0)
                 {
-                    Debug.LogFormat("[Simon's Ultimate Showdown #{0}] For flash {1} the correct colors from Simon's Stages are...", moduleId, i + 1);
+                    Debug.LogFormat("[Simon's Ultimate Showdown #{0}] For flash {1} the correct colors from Simon's Stages/Simon Stages are...", moduleId, i + 1);
                     getCorrectStagesAnswer(colorFlashes[i], i);
                 }
                 else if (modulesOfButtons[buttonsFlashing[i]] == 1)
@@ -2821,7 +2821,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         int sum = 0;
         for(int i = 0; i < bomb.GetModuleNames().Count; i++)
         {
-            if(bomb.GetModuleNames().ElementAt(i).Equals("Simon's Stages") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Scrambles") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Screams") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Stops") || bomb.GetModuleNames().ElementAt(i).Equals("Tasha Squeals") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Simons"))
+            if(bomb.GetModuleNames().ElementAt(i).Equals("Simon's Stages") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Stages") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Scrambles") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Screams") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Stops") || bomb.GetModuleNames().ElementAt(i).Equals("Tasha Squeals") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Simons"))
             {
                 sum++;
             }
@@ -3121,7 +3121,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
 
     private IEnumerator flashingStart()
     {
-        //Play Simon's Stages intro sequence if a button from it is available
+        //Play Simon's Stages/Simon Stages intro sequence if a button from it is available
         if (modulesOfButtons.Contains(0))
         {
             audio.PlaySoundAtTransform("scaryRiff", transform);

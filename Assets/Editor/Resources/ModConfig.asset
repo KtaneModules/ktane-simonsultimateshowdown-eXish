@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 615501dbe4f3fe94fbf4b564abb10237, type: 3}
   m_Name: ModConfig
   m_EditorClassIdentifier: 
-  id: simonUltimateShowdownModule
+  id: simonsUltimateShowdownModule
   title: Simon's Ultimate Showdown
   author: eXish
   description: 'You love simon modules right? Lets see if that''s true...
@@ -22,12 +22,13 @@ MonoBehaviour:
     PDF: https://ktane.timwi.de/PDF/Simon%E2%80%90s%20Ultimate%20Showdown.pdf
 
 
-    Simon''s Ultimate Showdown (simonUltimateShowdownModule) v1.0.0
+    Simon''s Ultimate Showdown (simonsUltimateShowdownModule) v1.0.0
 
     Module and Concept by eXish
 
     Many objects used in this module are from the creators of the other simon modules,
-    go check them out!
+    so many thanks to noahcoolboy, Timwi, Red Penguin, Royal_Flu$h, JerryEris, and
+    EpicToast!
 
     Twitch Plays supported'
   version: 1.0.0

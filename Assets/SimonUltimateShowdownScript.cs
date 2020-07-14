@@ -43,6 +43,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
     private int usedPriorityList;
     private List<string> presses = new List<string>();
     private bool cooldown = true;
+    private bool startup = true;
 
     private string[] stagesColorNames = { "red", "blue", "yellow", "green", "orange", "pink", "magenta", "lime", "cyan", "white" };
     public Material[] stagesColorMats;
@@ -263,30 +264,34 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
     }
 
     void Start () {
-        float scalar = transform.lossyScale.x;
-        foreach (Light l in stagesLights)
+        if (startup)
         {
-            l.range *= scalar;
-        }
-        foreach (Light l in scramblesLights)
-        {
-            l.range *= scalar;
-        }
-        foreach (Light l in screamsLights)
-        {
-            l.range *= scalar;
-        }
-        foreach (Light l in stopsLights)
-        {
-            l.range *= scalar;
-        }
-        foreach (Light l in tashaLights)
-        {
-            l.range *= scalar;
-        }
-        foreach (Light l in simonsLights)
-        {
-            l.range *= scalar;
+            startup = false;
+            float scalar = transform.lossyScale.x;
+            foreach (Light l in stagesLights)
+            {
+                l.range *= scalar;
+            }
+            foreach (Light l in scramblesLights)
+            {
+                l.range *= scalar;
+            }
+            foreach (Light l in screamsLights)
+            {
+                l.range *= scalar;
+            }
+            foreach (Light l in stopsLights)
+            {
+                l.range *= scalar;
+            }
+            foreach (Light l in tashaLights)
+            {
+                l.range *= scalar;
+            }
+            foreach (Light l in simonsLights)
+            {
+                l.range *= scalar;
+            }
         }
         ImportantStartupStuff();
         //Randomize modules of buttons

@@ -13,6 +13,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
     public KMColorblindMode colorblind;
     public GameObject[] cbtexts;
     private bool colorblindActive;
+    private SimonsUltimateShowdownSettings Settings = new SimonsUltimateShowdownSettings();
 
     private string[] modulesNames = { "Simon's Stages/Simon Stages", "Simon Scrambles", "Simon Screams", "Simon Stores (coming to a module near you Kappa)", "Simon Stops", "Tasha Squeals", "Simon Simons" };
     private int[] modulesOfButtons = { -1, -1, -1, -1, -1, -1 };
@@ -149,6 +150,11 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             KMSelectable pressed = obj;
             pressed.OnInteract += delegate () { PressButton(pressed); return false; };
         }
+        ModConfig<SimonsUltimateShowdownSettings> modConfig = new ModConfig<SimonsUltimateShowdownSettings>("SimonsUltimateShowdownSettings");
+        //Read from the settings file, or create one if one doesn't exist
+        Settings = modConfig.Settings;
+        //Update the settings file incase there was an error during read
+        modConfig.Settings = Settings;
         for (int i = 0; i < 6; i++)
         {
             stagesLights[i].enabled = false;
@@ -257,6 +263,31 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
     }
 
     void Start () {
+        float scalar = transform.lossyScale.x;
+        foreach (Light l in stagesLights)
+        {
+            l.range *= scalar;
+        }
+        foreach (Light l in scramblesLights)
+        {
+            l.range *= scalar;
+        }
+        foreach (Light l in screamsLights)
+        {
+            l.range *= scalar;
+        }
+        foreach (Light l in stopsLights)
+        {
+            l.range *= scalar;
+        }
+        foreach (Light l in tashaLights)
+        {
+            l.range *= scalar;
+        }
+        foreach (Light l in simonsLights)
+        {
+            l.range *= scalar;
+        }
         ImportantStartupStuff();
         //Randomize modules of buttons
         if (resetButtons)
@@ -264,7 +295,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             for (int i = 0; i < 6; i++)
             {
                 int rando = UnityEngine.Random.Range(0, 7);
-                while(rando == 3)
+                while (settingsCheck(rando))
                 {
                     rando = UnityEngine.Random.Range(0, 7);
                 }
@@ -3048,6 +3079,54 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         return false;
     }
 
+    private bool settingsCheck(int rand)
+    {
+        if (rand == 3)
+        {
+            return true;
+        }
+        else if (Settings.disableStages && Settings.disableScrambles && Settings.disableScreams && Settings.disableStops && Settings.disableTasha && Settings.disableSimons)
+        {
+            return false;
+        }
+        else
+        {
+            List<int> possibles = new List<int>();
+            if (!Settings.disableStages)
+            {
+                possibles.Add(0);
+            }
+            if (!Settings.disableScrambles)
+            {
+                possibles.Add(1);
+            }
+            if (!Settings.disableScreams)
+            {
+                possibles.Add(2);
+            }
+            if (!Settings.disableStops)
+            {
+                possibles.Add(4);
+            }
+            if (!Settings.disableTasha)
+            {
+                possibles.Add(5);
+            }
+            if (!Settings.disableSimons)
+            {
+                possibles.Add(6);
+            }
+            if (possibles.Contains(rand))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+
     private IEnumerator downButtonScreamsEnd(int localpos)
     {
         int movement = 0;
@@ -3774,4 +3853,55 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             }
         }
     }
+
+    class SimonsUltimateShowdownSettings
+    {
+        public bool disableStages = false;
+        public bool disableScrambles = false;
+        public bool disableScreams = false;
+        public bool disableStops = false;
+        public bool disableTasha = false;
+        public bool disableSimons = false;
+    }
+
+    static Dictionary<string, object>[] TweaksEditorSettings = new Dictionary<string, object>[]
+    {
+        new Dictionary<string, object>
+        {
+            { "Filename", "SimonsUltimateShowdownSettings.json" },
+            { "Name", "Simon's Ultimate Showdown Settings" },
+            { "Listing", new List<Dictionary<string, object>>{
+                new Dictionary<string, object>
+                {
+                    { "Key", "disableStages" },
+                    { "Text", "Prevents the appearance of any buttons from \"Simon's Stages\"" }
+                },
+                new Dictionary<string, object>
+                {
+                    { "Key", "disableScrambles" },
+                    { "Text", "Prevents the appearance of any buttons from \"Simon Scrambles\"" }
+                },
+                new Dictionary<string, object>
+                {
+                    { "Key", "disableScreams" },
+                    { "Text", "Prevents the appearance of any buttons from \"Simon Screams\"" }
+                },
+                new Dictionary<string, object>
+                {
+                    { "Key", "disableStops" },
+                    { "Text", "Prevents the appearance of any buttons from \"Simon Stops\"" }
+                },
+                new Dictionary<string, object>
+                {
+                    { "Key", "disableTasha" },
+                    { "Text", "Prevents the appearance of any buttons from \"Tasha Squeals\"" }
+                },
+                new Dictionary<string, object>
+                {
+                    { "Key", "disableSimons" },
+                    { "Text", "Prevents the appearance of any buttons from \"Simon Simons\"" }
+                },
+            } }
+        }
+    };
 }

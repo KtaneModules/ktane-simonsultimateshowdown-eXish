@@ -223,6 +223,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         correctColors.Clear();
         colorPositions.Clear();
         correctColorsModified.Clear();
+        colorPositionsModified.Clear();
         presses.Clear();
         Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Current Stage: {1} ({2} flashes)", moduleId, stage, stage + 2);
         //Prep all objects
@@ -602,7 +603,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
 
     private void getFinalSequence(bool verynew)
     {
-        //output initial sequence
+        //Output initial sequence
         string output = "";
         for (int i = 0; i < correctColors.Count; i++)
         {
@@ -615,9 +616,11 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 output += correctColors[i] + ", ";
             }
         }
-        if(!verynew)
+        if (!verynew)
             Debug.LogFormat("[Simon's Ultimate Showdown #{0}] The initial sequence of colors before modification is {1}", moduleId, output);
         //Make modifications
+        List<string> correctColorsModified = new List<string>();
+        List<int> colorPositionsModified = new List<int>();
         correctColorsModified = correctColors;
         colorPositionsModified = colorPositions;
         //Rule 1
@@ -670,7 +673,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Modification rule 1 is False", moduleId);
         }
         //Rule 2
-        if (colorsNeededForFlash(3).Contains("red"))
+        if (colorsNeededForFlash(3, correctColorsModified, colorPositionsModified).Contains("red"))
         {
             if (!verynew)
                 Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Modification rule 2 is True", moduleId);
@@ -738,7 +741,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Modification rule 3 is False", moduleId);
         }
         //Rule 4
-        if (colorsNeededForFlash(2).Contains("purple"))
+        if (colorsNeededForFlash(2, correctColorsModified, colorPositionsModified).Contains("purple"))
         {
             if (!verynew)
                 Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Modification rule 4 is True", moduleId);
@@ -928,6 +931,8 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             else
                 Debug.LogFormat("[Simon's Ultimate Showdown #{0}] The new final modified color sequence for stage {1} is {2}", moduleId, stage, temp2);
         }
+        this.correctColorsModified = correctColorsModified;
+        this.colorPositionsModified = colorPositionsModified;
     }
 
     void PressButton(KMSelectable pressed)
@@ -2163,7 +2168,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         string[] row2 = { "yellow", "blue", "red", "green", "blue", "red", "green", "yellow", "red", "red", "yellow", "green", "green", "blue", "blue", "yellow" };
         string[] row3 = { "green", "red", "green", "red", "yellow", "yellow", "blue", "green", "red", "blue", "blue", "red", "yellow", "yellow", "blue", "green" };
         int index = 0;
-        if(pos == 2)
+        if (pos == 2)
         {
             index += 4;
         }
@@ -2187,7 +2192,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         {
             index += 3;
         }
-        if(currentStrikes == 0)
+        if (currentStrikes == 0)
         {
             if (modify)
             {
@@ -2815,21 +2820,21 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         return colorsOfButtons[but];
     }
 
-    private List<string> colorsNeededForFlash(int flash)
+    private List<string> colorsNeededForFlash(int flash, List<string> colors, List<int> positions)
     {
         List<string> temp = new List<string>();
         if(flash == (stage + 2))
         {
-            for (int i = colorPositionsModified.IndexOf(flash); i < colorPositionsModified.Count; i++)
+            for (int i = positions.IndexOf(flash); i < positions.Count; i++)
             {
-                temp.Add(correctColorsModified[i]);
+                temp.Add(colors[i]);
             }
         }
         else
         {
-            for (int i = colorPositionsModified.IndexOf(flash); i < colorPositionsModified.IndexOf(flash+1); i++)
+            for (int i = positions.IndexOf(flash); i < positions.IndexOf(flash+1); i++)
             {
-                temp.Add(correctColorsModified[i]);
+                temp.Add(colors[i]);
             }
         }
         return temp;

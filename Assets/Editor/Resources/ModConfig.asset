@@ -22,7 +22,7 @@ MonoBehaviour:
     PDF: https://ktane.timwi.de/PDF/Simon%E2%80%99s%20Ultimate%20Showdown.pdf
 
 
-    Simon''s Ultimate Showdown (simonsUltimateShowdownModule) v1.0.6
+    Simon''s Ultimate Showdown (simonsUltimateShowdownModule) v1.0.7
 
     Module and Concept by eXish
 
@@ -31,6 +31,6 @@ MonoBehaviour:
     EpicToast!
 
     Twitch Plays supported'
-  version: 1.0.6
+  version: 1.0.7
   outputFolder: build
   previewImage: {fileID: 2800000, guid: e15df3f48d8aab540a231f78e5956242, type: 3}

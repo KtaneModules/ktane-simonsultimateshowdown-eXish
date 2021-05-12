@@ -2401,9 +2401,12 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 log += "and " + sendsColorNames[sendsActualAnswer[i]];
             else
                 log += sendsColorNames[sendsActualAnswer[i]] + ", ";
+            if (i == 0)
+                colorPositions.Add(flashNum + 1);
+            else
+                colorPositions.Add(0);
             correctColors.Add(sendsColorNames[sendsActualAnswer[i]]);
         }
-        colorPositions.Add(flashNum + 1);
         Debug.LogFormat("[Simon's Ultimate Showdown #{0}] {1}", moduleId, log);
     }
 

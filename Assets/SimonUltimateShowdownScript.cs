@@ -3427,6 +3427,27 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
 
         while (true)
         {
+            if (colorblindActive)
+            {
+                if (sendsMorseR[sendsMorseRPos] != '#' && sendsMorseG[sendsMorseGPos] != '#' && sendsMorseB[sendsMorseBPos] != '#')
+                    cbtexts[6].GetComponent<TextMesh>().text = "K";
+                else if (sendsMorseR[sendsMorseRPos] == '#' && sendsMorseG[sendsMorseGPos] != '#' && sendsMorseB[sendsMorseBPos] != '#')
+                    cbtexts[6].GetComponent<TextMesh>().text = "R";
+                else if (sendsMorseR[sendsMorseRPos] != '#' && sendsMorseG[sendsMorseGPos] == '#' && sendsMorseB[sendsMorseBPos] != '#')
+                    cbtexts[6].GetComponent<TextMesh>().text = "G";
+                else if (sendsMorseR[sendsMorseRPos] != '#' && sendsMorseG[sendsMorseGPos] != '#' && sendsMorseB[sendsMorseBPos] == '#')
+                    cbtexts[6].GetComponent<TextMesh>().text = "B";
+                else if (sendsMorseR[sendsMorseRPos] == '#' && sendsMorseG[sendsMorseGPos] == '#' && sendsMorseB[sendsMorseBPos] != '#')
+                    cbtexts[6].GetComponent<TextMesh>().text = "Y";
+                else if (sendsMorseR[sendsMorseRPos] == '#' && sendsMorseG[sendsMorseGPos] != '#' && sendsMorseB[sendsMorseBPos] == '#')
+                    cbtexts[6].GetComponent<TextMesh>().text = "M";
+                else if (sendsMorseR[sendsMorseRPos] != '#' && sendsMorseG[sendsMorseGPos] == '#' && sendsMorseB[sendsMorseBPos] == '#')
+                    cbtexts[6].GetComponent<TextMesh>().text = "C";
+                else
+                    cbtexts[6].GetComponent<TextMesh>().text = "W";
+            }
+            else
+                cbtexts[6].GetComponent<TextMesh>().text = "";
             sendsLightsObj.GetComponent<Renderer>().material.color = new Color(sendsMorseR[sendsMorseRPos] == '#' ? bright : dark, sendsMorseG[sendsMorseGPos] == '#' ? bright : dark, sendsMorseB[sendsMorseBPos] == '#' ? bright : dark);
             foreach (var light in sendsLights)
                 light.color = new Color(sendsMorseR[sendsMorseRPos] == '#' ? 1 : 0, sendsMorseG[sendsMorseGPos] == '#' ? 1 : 0, sendsMorseB[sendsMorseBPos] == '#' ? 1 : 0);

@@ -178,6 +178,27 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         Settings = modConfig.Settings;
         //Update the settings file incase there was an error during read
         modConfig.Settings = Settings;
+        //Figure out if module is running on a mission and requesting certain settings
+        string missionDesc = KTMissionGetter.Mission.Description;
+        if (missionDesc != null)
+        {
+            Regex regex = new Regex(@"\[Simon's Ultimate Showdown\] ((true|false), *){6}(true|false)");
+            var match = regex.Match(missionDesc);
+            if (match.Success)
+            {
+                string[] options = match.Value.Replace("[Simon's Ultimate Showdown] ", "").Split(',');
+                bool[] values = new bool[options.Length];
+                for (int i = 0; i < options.Length; i++)
+                    values[i] = options[i] == "true" ? true : false;
+                Settings.disableStages = values[0];
+                Settings.disableScrambles = values[1];
+                Settings.disableScreams = values[2];
+                Settings.disableStops = values[3];
+                Settings.disableTasha = values[4];
+                Settings.disableSimons = values[5];
+                Settings.disableSends = values[6];
+            }
+        }
         for (int i = 0; i < 6; i++)
         {
             stagesLights[i].enabled = false;

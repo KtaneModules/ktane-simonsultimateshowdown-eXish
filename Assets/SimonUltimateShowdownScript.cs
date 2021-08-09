@@ -270,7 +270,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         colorPositionsModified.Clear();
         presses.Clear();
         Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Current Stage: {1} ({2} flashes)", moduleId, stage, stage + 2);
-        //Prep all objects
+        //Prep all objects and set sends color sequence
         if (resetButtons)
         {
             alreadyUp.Clear();
@@ -308,35 +308,35 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 sendsButtonsObj[i].GetComponent<Renderer>().enabled = false;
             }
             sendsLightsObj.SetActive(false);
+            var available = Enumerable.Range(0, 26).ToList().Shuffle();
+            var r = (char)(available[0] + 'A');
+            var g = (char)(available[1] + 'A');
+            var b = (char)(available[2] + 'A');
+
+            sendsMorseR = getSendsMorse(r) + "___";
+            sendsMorseRPos = UnityEngine.Random.Range(0, sendsMorseR.Length);
+            sendsMorseG = getSendsMorse(g) + "___";
+            sendsMorseGPos = UnityEngine.Random.Range(0, sendsMorseG.Length);
+            sendsMorseB = getSendsMorse(b) + "___";
+            sendsMorseBPos = UnityEngine.Random.Range(0, sendsMorseB.Length);
+
+            List<int[]> sendsPossibleAnswers = new List<int[]>();
+            var answerLetterR = getSendsLetter(b - 'A', g - 'A', r - 'A');
+            var answerLetterG = getSendsLetter(r - 'A', b - 'A', g - 'A');
+            var answerLetterB = getSendsLetter(g - 'A', r - 'A', b - 'A');
+            var answerR = getSendsMorse(answerLetterR);
+            var answerG = getSendsMorse(answerLetterG);
+            var answerB = getSendsMorse(answerLetterB);
+            var maxLength = Math.Max(Math.Max(answerR.Length, answerG.Length), answerB.Length);
+            for (int gr = 0; gr <= maxLength - answerR.Length; gr++)
+                for (int gg = 0; gg <= maxLength - answerG.Length; gg++)
+                    for (int gb = 0; gb <= maxLength - answerB.Length; gb++)
+                        sendsPossibleAnswers.Add(Enumerable.Range(0, maxLength).Select(j =>
+                            (j < gr || j >= gr + answerR.Length || answerR[j - gr] != '#' ? 0 : 4) +
+                            (j < gg || j >= gg + answerG.Length || answerG[j - gg] != '#' ? 0 : 2) +
+                            (j < gb || j >= gb + answerB.Length || answerB[j - gb] != '#' ? 0 : 1)).ToArray());
+            sendsActualAnswer = sendsPossibleAnswers[0];
         }
-        var available = Enumerable.Range(0, 26).ToList().Shuffle();
-        var r = (char)(available[0] + 'A');
-        var g = (char)(available[1] + 'A');
-        var b = (char)(available[2] + 'A');
-
-        sendsMorseR = getSendsMorse(r) + "___";
-        sendsMorseRPos = UnityEngine.Random.Range(0, sendsMorseR.Length);
-        sendsMorseG = getSendsMorse(g) + "___";
-        sendsMorseGPos = UnityEngine.Random.Range(0, sendsMorseG.Length);
-        sendsMorseB = getSendsMorse(b) + "___";
-        sendsMorseBPos = UnityEngine.Random.Range(0, sendsMorseB.Length);
-
-        List<int[]> sendsPossibleAnswers = new List<int[]>();
-        var answerLetterR = getSendsLetter(b - 'A', g - 'A', r - 'A');
-        var answerLetterG = getSendsLetter(r - 'A', b - 'A', g - 'A');
-        var answerLetterB = getSendsLetter(g - 'A', r - 'A', b - 'A');
-        var answerR = getSendsMorse(answerLetterR);
-        var answerG = getSendsMorse(answerLetterG);
-        var answerB = getSendsMorse(answerLetterB);
-        var maxLength = Math.Max(Math.Max(answerR.Length, answerG.Length), answerB.Length);
-        for (int gr = 0; gr <= maxLength - answerR.Length; gr++)
-            for (int gg = 0; gg <= maxLength - answerG.Length; gg++)
-                for (int gb = 0; gb <= maxLength - answerB.Length; gb++)
-                    sendsPossibleAnswers.Add(Enumerable.Range(0, maxLength).Select(j =>
-                        (j < gr || j >= gr + answerR.Length || answerR[j - gr] != '#' ? 0 : 4) +
-                        (j < gg || j >= gg + answerG.Length || answerG[j - gg] != '#' ? 0 : 2) +
-                        (j < gb || j >= gb + answerB.Length || answerB[j - gb] != '#' ? 0 : 1)).ToArray());
-        sendsActualAnswer = sendsPossibleAnswers[0];
     }
 
     void Start () {
@@ -3893,6 +3893,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         stage--;
         cooldown = true;
         stopsMissedInput = true;
+        stopsCtrlInput = false;
         for (int i = 0; i < 6; i++)
         {
             stagesLights[i].enabled = false;

@@ -23,10 +23,10 @@ MonoBehaviour:
     disableTasha, disableSimons, and disableSends. The spaces after each comma are
     optional.\n\nHTML: https://ktane.timwi.de/HTML/Simon%E2%80%99s%20Ultimate%20Showdown.html\nPDF:
     https://ktane.timwi.de/PDF/Simon%E2%80%99s%20Ultimate%20Showdown.pdf\n\nSimon's
-    Ultimate Showdown (simonsUltimateShowdownModule) v1.1.0\nModule and Concept by
+    Ultimate Showdown (simonsUltimateShowdownModule) v1.1.1\nModule and Concept by
     eXish\nMany objects used in this module are from the creators of the other simon
     modules, so many thanks to noahcoolboy, Timwi, Red Penguin, Royal_Flu$h, JerryEris,
     and EpicToast!\nTwitch Plays supported"
-  version: 1.1.0
+  version: 1.1.1
   outputFolder: build
   previewImage: {fileID: 2800000, guid: e15df3f48d8aab540a231f78e5956242, type: 3}

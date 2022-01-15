@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using KModkit;
 using System.Text.RegularExpressions;
-using System;
 
 public class SimonUltimateShowdownScript : MonoBehaviour {
 
@@ -15,7 +14,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
     private bool colorblindActive;
     private SimonsUltimateShowdownSettings Settings = new SimonsUltimateShowdownSettings();
 
-    private string[] modulesNames = { "Simon's Stages/Simon Stages", "Simon Scrambles", "Simon Screams", "Simon Stores (coming to a module near you Kappa)", "Simon Stops", "Tasha Squeals", "Simon Simons", "Simon Sends" };
+    private string[] modulesNames = { "Simon's Stages/Simon Stages", "Simon Scrambles", "Simon Screams", "Simon Stores (coming to a module near you Kappa)", "Simon Stops", "Tasha Squeals", "Simon Simons" };
     private int[] modulesOfButtons = { -1, -1, -1, -1, -1, -1 };
     private string[] colorsOfButtons = { "", "", "", "", "", "" };
     private List<string> correctColors = new List<string>();
@@ -111,23 +110,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
     private int[] simonsRandomPressSounds = { 0, 0, 0, 0, 0, 0 };
     private bool[] simonsButtonsEnabled = { false, false, false, false, false, false };
 
-    private string[] sendsColorNames = { "black", "blue", "green", "cyan", "red", "magenta", "yellow", "white" };
-    public Material[] sendsColorMats;
-    public GameObject[] sendsButtonsObj;
-    public GameObject[] sendsFlashObj;
-    public GameObject sendsLightsObj;
-    public KMSelectable[] sendsButtons;
-    public Light[] sendsLights;
-    private Coroutine sendsFlashCoroutine = null;
-    private int[] sendsRandomPressSounds = { 0, 0, 0, 0, 0, 0 };
-    private bool[] sendsButtonsEnabled = { false, false, false, false, false, false };
-    private string[][] sendsManualText = @"THIS IS THE FIRST WORD FOR PURPOSES OF COUNTING WORDS AND PARAGRAPHS IN THIS TEXT THE FLAVOR TEXT AND APPENDIX ARE EXCLUDED|HYPHENATED WORDS EQUATE TO JUST ONE WORD PUNCTUATION MARKS DO NOT COUNT AS LETTERS|A SIMON SENDS PUZZLE IS EQUIPPED WITH COLORIZED LIGHTS WHICH FLASH UNIQUE LETTERS IN MORSE CODE SIMULTANEOUSLY AND A DIAL FOR ADJUSTING THE FREQUENCY OF FLASHING|OWING TO THEIR PROXIMITY THE LIGHTS RED GREEN AND BLUE MIX BY WAY OF ADDITIVE COLOR MIXING WORK OUT THE INDIVIDUAL COLORS|CONVERT EACH RECOGNIZED LETTER INTO A NUMBER USING ITS ALPHABETIC POSITION CALL YOUR THUSLY ACQUIRED NUMBERS R G AND B DERIVE NEW LETTERS AS FOLLOWS|COUNT R LETTERS FROM THE START OF THE GTH WORD FROM THE START OF THE BTH PARAGRAPH IN THIS MANUAL AND MAKE IT YOUR NEW RED LETTER|COUNT G LETTERS FROM THE START OF THE BTH WORD FROM THE START OF THE RTH PARAGRAPH IN THIS MANUAL AND MAKE IT YOUR NEW GREEN LETTER|COUNT B LETTERS FROM THE START OF THE RTH WORD FROM THE START OF THE GTH PARAGRAPH IN THIS MANUAL AND MAKE IT YOUR NEW BLUE LETTER|REALIZE A NEW COLOR SEQUENCE BY JUXTAPOSING AGAIN USING KNOWN ADDITIVE COLOR MIXING ONE COPY OF EACH NEW LETTERS MORSE CODE|ACKNOWLEDGE A DOT AND A DASH IN MORSE CODE HAVE SIZES OF ONE AND THREE UNITS RESPECTIVELY GAPS BETWEEN THEM ALSO HAVE A SIZE OF JUST ONE UNIT|INPUT YOUR ACQUIRED COLOR SEQUENCE USING EACH QUALIFYING COLOR BUTTON|A MISTAKE IS REJECTED WITH A STRIKE ON SUCH AN OCCASION ADJUST AND FINISH YOUR ANSWER LOOK AT THE DISPLAY TO JUDGE YOUR INPUT THUS FAR|JUMP BACK TO THE FIRST WORD IF WHILE COUNTING YOU ADVANCE BEYOND THE LAST WORD WHICH IS THIS"/*!MANUAL*/
-        .Split('|').Select(line => line.Split(' ')).ToArray();
-    private string[] sendsMorse = ".-|-...|-.-.|-..|.|..-.|--.|....|..|.---|-.-|.-..|--|-.|---|.--.|--.-|.-.|...|-|..-|...-|.--|-..-|-.--|--..".Split('|');
-    private int[] sendsActualAnswer;
-    private string sendsMorseR, sendsMorseG, sendsMorseB;
-    private int sendsMorseRPos, sendsMorseGPos, sendsMorseBPos;
-
     static int moduleIdCounter = 1;
     int moduleId;
     private bool moduleSolved;
@@ -168,11 +150,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             KMSelectable pressed = obj;
             pressed.OnInteract += delegate () { PressButton(pressed); return false; };
         }
-        foreach (KMSelectable obj in sendsButtons)
-        {
-            KMSelectable pressed = obj;
-            pressed.OnInteract += delegate () { PressButton(pressed); return false; };
-        }
         ModConfig<SimonsUltimateShowdownSettings> modConfig = new ModConfig<SimonsUltimateShowdownSettings>("SimonsUltimateShowdownSettings");
         //Read from the settings file, or create one if one doesn't exist
         Settings = modConfig.Settings;
@@ -182,7 +159,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         string missionDesc = KTMissionGetter.Mission.Description;
         if (missionDesc != null)
         {
-            Regex regex = new Regex(@"\[Simon's Ultimate Showdown\] ((true|false), *){6}(true|false)");
+            Regex regex = new Regex(@"\[Simon's Ultimate Showdown\] ((true|false), *){5}(true|false)");
             var match = regex.Match(missionDesc);
             if (match.Success)
             {
@@ -196,7 +173,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 Settings.disableStops = values[3];
                 Settings.disableTasha = values[4];
                 Settings.disableSimons = values[5];
-                Settings.disableSends = values[6];
             }
         }
         for (int i = 0; i < 6; i++)
@@ -224,7 +200,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             }
         }
         StartCoroutine(flashingStart());
-        sendsFlashCoroutine = StartCoroutine(SendsBlink());
     }
 
     void Update()
@@ -270,7 +245,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         colorPositionsModified.Clear();
         presses.Clear();
         Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Current Stage: {1} ({2} flashes)", moduleId, stage, stage + 2);
-        //Prep all objects and set sends color sequence
+        //Prep all objects
         if (resetButtons)
         {
             alreadyUp.Clear();
@@ -282,7 +257,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             stopsButtonsEnabled = new bool[6];
             tashaButtonsEnabled = new bool[6];
             simonsButtonsEnabled = new bool[6];
-            sendsButtonsEnabled = new bool[6];
             actualButtons = new KMSelectable[6];
             if (stopsMissedInput)
             {
@@ -305,37 +279,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 tashaLightsObj[i].SetActive(false);
                 simonsButtonsObj[i].GetComponent<Renderer>().enabled = false;
                 simonsLightsObj[i].SetActive(false);
-                sendsButtonsObj[i].GetComponent<Renderer>().enabled = false;
             }
-            sendsLightsObj.SetActive(false);
-            var available = Enumerable.Range(0, 26).ToList().Shuffle();
-            var r = (char)(available[0] + 'A');
-            var g = (char)(available[1] + 'A');
-            var b = (char)(available[2] + 'A');
-
-            sendsMorseR = getSendsMorse(r) + "___";
-            sendsMorseRPos = UnityEngine.Random.Range(0, sendsMorseR.Length);
-            sendsMorseG = getSendsMorse(g) + "___";
-            sendsMorseGPos = UnityEngine.Random.Range(0, sendsMorseG.Length);
-            sendsMorseB = getSendsMorse(b) + "___";
-            sendsMorseBPos = UnityEngine.Random.Range(0, sendsMorseB.Length);
-
-            List<int[]> sendsPossibleAnswers = new List<int[]>();
-            var answerLetterR = getSendsLetter(b - 'A', g - 'A', r - 'A');
-            var answerLetterG = getSendsLetter(r - 'A', b - 'A', g - 'A');
-            var answerLetterB = getSendsLetter(g - 'A', r - 'A', b - 'A');
-            var answerR = getSendsMorse(answerLetterR);
-            var answerG = getSendsMorse(answerLetterG);
-            var answerB = getSendsMorse(answerLetterB);
-            var maxLength = Math.Max(Math.Max(answerR.Length, answerG.Length), answerB.Length);
-            for (int gr = 0; gr <= maxLength - answerR.Length; gr++)
-                for (int gg = 0; gg <= maxLength - answerG.Length; gg++)
-                    for (int gb = 0; gb <= maxLength - answerB.Length; gb++)
-                        sendsPossibleAnswers.Add(Enumerable.Range(0, maxLength).Select(j =>
-                            (j < gr || j >= gr + answerR.Length || answerR[j - gr] != '#' ? 0 : 4) +
-                            (j < gg || j >= gg + answerG.Length || answerG[j - gg] != '#' ? 0 : 2) +
-                            (j < gb || j >= gb + answerB.Length || answerB[j - gb] != '#' ? 0 : 1)).ToArray());
-            sendsActualAnswer = sendsPossibleAnswers[0];
         }
     }
 
@@ -368,31 +312,17 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             {
                 l.range *= scalar;
             }
-            foreach (Light l in sendsLights)
-            {
-                l.range *= scalar;
-            }
-            sendsLightsObj.GetComponent<Renderer>().material.color = new Color(0.1f, 0.1f, 0.1f);
-            for (int i = 0; i < 2; i++)
-            {
-                sendsLights[i].color = new Color(0, 0, 0);
-            }
         }
         ImportantStartupStuff();
         //Randomize modules of buttons
         if (resetButtons)
         {
-            for (int l = 0; l < 2; l++)
-            {
-                sendsLights[l].gameObject.SetActive(false);
-            }
-            bool sendsFound = false;
             for (int i = 0; i < 6; i++)
             {
-                int rando = UnityEngine.Random.Range(0, 8);
+                int rando = Random.Range(0, 7);
                 while (settingsCheck(rando))
                 {
-                    rando = UnityEngine.Random.Range(0, 8);
+                    rando = Random.Range(0, 7);
                 }
                 modulesOfButtons[i] = rando;
                 ButtonUp(rando, i);
@@ -445,22 +375,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                     actualButtons[i] = simonsButtons[i];
                     alreadyUp.Add(simonsButtonsObj[i]);
                 }
-                else if (rando == 7)
-                {
-                    sendsButtonsObj[i].GetComponent<Renderer>().enabled = true;
-                    sendsButtonsEnabled[i] = true;
-                    actualButtons[i] = sendsButtons[i];
-                    alreadyUp.Add(sendsButtonsObj[i]);
-                    if (!sendsFound)
-                    {
-                        sendsFound = true;
-                        sendsLightsObj.SetActive(true);
-                        for (int l = 0; l < 2; l++)
-                        {
-                            sendsLights[l].gameObject.SetActive(true);
-                        }
-                    }
-                }
                 typeUp.Add(rando);
                 posUp.Add(i);
                 Debug.LogFormat("[Simon's Ultimate Showdown #{0}] The {1} button comes from {2}", moduleId, integerToPosition(i), modulesNames[rando]);
@@ -478,51 +392,44 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         stopsRandomPressSounds = new int[6];
         tashaRandomPressSounds = new int[6];
         simonsRandomPressSounds = new int[6];
-        sendsRandomPressSounds = new int[6];
         for (int i = 0; i < 6; i++)
         {
-            int rando = UnityEngine.Random.Range(1, 11);
-            int rando2 = UnityEngine.Random.Range(1, 7);
-            int rando3 = UnityEngine.Random.Range(7, 13);
-            int rando4 = UnityEngine.Random.Range(1, 7);
-            int rando5 = UnityEngine.Random.Range(1, 5);
-            int rando6 = UnityEngine.Random.Range(1, 5);
-            int rando7 = UnityEngine.Random.Range(1, 8);
+            int rando = Random.Range(1, 11);
+            int rando2 = Random.Range(1, 7);
+            int rando3 = Random.Range(7, 13);
+            int rando4 = Random.Range(1, 7);
+            int rando5 = Random.Range(1, 5);
+            int rando6 = Random.Range(1, 5);
+            int rando7 = Random.Range(1, 8);
             stagesRandomPressSounds[i] = rando;
             screamsRandomFlashSounds[i] = rando2;
             screamsRandomPressSounds[i] = rando3;
             stopsRandomPressSounds[i] = rando4;
             tashaRandomPressSounds[i] = rando5;
             simonsRandomPressSounds[i] = rando6;
-            sendsRandomPressSounds[i] = rando7;
             while (stagesSoundsEqual(i))
             {
-                rando = UnityEngine.Random.Range(1, 11);
+                rando = Random.Range(1, 11);
                 stagesRandomPressSounds[i] = rando;
             }
             while (screamsSoundsEqual(i))
             {
-                rando2 = UnityEngine.Random.Range(1, 7);
-                rando3 = UnityEngine.Random.Range(7, 13);
+                rando2 = Random.Range(1, 7);
+                rando3 = Random.Range(7, 13);
                 screamsRandomFlashSounds[i] = rando2;
                 screamsRandomPressSounds[i] = rando3;
             }
             while (stopsSoundsEqual(i))
             {
-                rando4 = UnityEngine.Random.Range(1, 7);
+                rando4 = Random.Range(1, 7);
                 stopsRandomPressSounds[i] = rando4;
-            }
-            while (sendsSoundsEqual(i))
-            {
-                rando4 = UnityEngine.Random.Range(1, 8);
-                sendsRandomPressSounds[i] = rando4;
             }
         }
         while (tashaSoundsEqual())
         {
             for (int i = 0; i < 6; i++)
             {
-                int rando = UnityEngine.Random.Range(1, 5);
+                int rando = Random.Range(1, 5);
                 tashaRandomPressSounds[i] = rando;
             }
         }
@@ -530,20 +437,19 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         {
             for (int i = 0; i < 6; i++)
             {
-                int rando = UnityEngine.Random.Range(1, 5);
+                int rando = Random.Range(1, 5);
                 simonsRandomPressSounds[i] = rando;
             }
         }
         //Colors
         for (int i = 0; i < 6; i++)
         {
-            int rando = UnityEngine.Random.Range(0, 10);
-            int rando2 = UnityEngine.Random.Range(0, 4);
-            int rando3 = UnityEngine.Random.Range(0, 6);
-            int rando4 = UnityEngine.Random.Range(0, 6);
-            int rando5 = UnityEngine.Random.Range(0, 4);
-            int rando6 = UnityEngine.Random.Range(0, 4);
-            int rando7 = UnityEngine.Random.Range(0, 8);
+            int rando = Random.Range(0, 10);
+            int rando2 = Random.Range(0, 4);
+            int rando3 = Random.Range(0, 6);
+            int rando4 = Random.Range(0, 6);
+            int rando5 = Random.Range(0, 4);
+            int rando6 = Random.Range(0, 4);
             if (modulesOfButtons[i] == 0)
             {
                 colorsOfButtons[i] = stagesColorNames[rando];
@@ -574,18 +480,9 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 colorsOfButtons[i] = simonsColorNames[rando6];
                 setSimonsColor(colorsOfButtons[i], simonsButtons[i]);
             }
-            else if (modulesOfButtons[i] == 7)
-            {
-                colorsOfButtons[i] = sendsColorNames[rando7];
-                setSendsColor(colorsOfButtons[i], sendsButtons[i]);
-            }
             if (colorsOfButtons[i].Equals("pink"))
             {
                 cbtexts[i].GetComponent<TextMesh>().text = colorsOfButtons[i].ElementAt(1).ToString().ToUpper();
-            }
-            else if (colorsOfButtons[i].Equals("black"))
-            {
-                cbtexts[i].GetComponent<TextMesh>().text = colorsOfButtons[i].ElementAt(4).ToString().ToUpper();
             }
             else
             {
@@ -595,7 +492,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             //Set stages literal button colors
             if (resetButtons)
             {
-                int randostages = UnityEngine.Random.Range(0, 2);
+                int randostages = Random.Range(0, 2);
                 if (randostages == 0)
                 {
                     stagesButtonsObj[i].GetComponent<Renderer>().material = stagesColorMats[10];
@@ -613,7 +510,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         {
             for (int i = 0; i < 3; i++)
             {
-                int rando = UnityEngine.Random.Range(0, 6);
+                int rando = Random.Range(0, 6);
                 buttonsFlashing[i] = rando;
                 colorFlashes[i] = colorsOfButtons[buttonsFlashing[i]];
                 Debug.LogFormat("[Simon's Ultimate Showdown #{0}] Flash {1} is the {2} button ({3})", moduleId, i+1, integerToPosition(buttonsFlashing[i]), colorFlashes[i]);
@@ -633,7 +530,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             {
                 if (i == 3 || resetButtons)
                 {
-                    int rando = UnityEngine.Random.Range(0, 6);
+                    int rando = Random.Range(0, 6);
                     buttonsFlashing[i] = rando;
                 }
                 colorFlashes[i] = colorsOfButtons[buttonsFlashing[i]];
@@ -654,7 +551,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             {
                 if (i == 4 || resetButtons)
                 {
-                    int rando = UnityEngine.Random.Range(0, 6);
+                    int rando = Random.Range(0, 6);
                     buttonsFlashing[i] = rando;
                 }
                 colorFlashes[i] = colorsOfButtons[buttonsFlashing[i]];
@@ -710,11 +607,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                     Debug.LogFormat("[Simon's Ultimate Showdown #{0}] For flash {1} the correct color from Simon Simons is...", moduleId, i + 1);
                     getCorrectSimonsAnswer(colorFlashes[i], buttonsFlashing[i], i, true);
                 }
-                else if (modulesOfButtons[buttonsFlashing[i]] == 7)
-                {
-                    Debug.LogFormat("[Simon's Ultimate Showdown #{0}] For flash {1} the correct color from Simon Sends is...", moduleId, i + 1);
-                    getCorrectSendsAnswer(i);
-                }
             }
             getFinalSequence(false);
         }
@@ -723,7 +615,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             if (correctColorsModified.Count == 1)
                 indexOfStop = 0;
             else
-                indexOfStop = UnityEngine.Random.Range(0, correctColorsModified.Count);
+                indexOfStop = Random.Range(0, correctColorsModified.Count);
             Debug.LogFormat("[Simon's Ultimate Showdown #{0}] The Control Input from Simon Stops will occur after press {1}!", moduleId, indexOfStop+1);
         }
         resetButtons = false;
@@ -1213,30 +1105,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             {
                 HandlePress(6, 5);
             }
-            else if (pressed == sendsButtons[0] && sendsButtonsEnabled[0])
-            {
-                HandlePress(7, 0);
-            }
-            else if (pressed == sendsButtons[1] && sendsButtonsEnabled[1])
-            {
-                HandlePress(7, 1);
-            }
-            else if (pressed == sendsButtons[2] && sendsButtonsEnabled[2])
-            {
-                HandlePress(7, 2);
-            }
-            else if (pressed == sendsButtons[3] && sendsButtonsEnabled[3])
-            {
-                HandlePress(7, 3);
-            }
-            else if (pressed == sendsButtons[4] && sendsButtonsEnabled[4])
-            {
-                HandlePress(7, 4);
-            }
-            else if (pressed == sendsButtons[5] && sendsButtonsEnabled[5])
-            {
-                HandlePress(7, 5);
-            }
         }
     }
 
@@ -1245,14 +1113,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         firstPress = true;
         if (pressFlash == null)
         {
-            if (type == 7)
-            {
-                sendsButtons[pos].AddInteractionPunch(0.3f);
-                audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, sendsButtons[pos].transform);
-                if (colorsOfButtons[pos] != "black")
-                    audio.PlaySoundAtTransform("SendsSound" + sendsRandomPressSounds[pos], sendsButtons[pos].transform);
-            }
-            else if (type == 6)
+            if (type == 6)
             {
                 simonsButtons[pos].AddInteractionPunch();
                 audio.PlaySoundAtTransform("simonspress" + simonsRandomPressSounds[pos], simonsButtons[pos].transform);
@@ -1286,20 +1147,13 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 stopsLights[i].enabled = false;
                 tashaLights[i].enabled = false;
                 simonsLights[i].enabled = false;
-                sendsFlashObj[i].SetActive(false);
                 stagesBases[i].SetActive(true);
             }
             if (timeBeforeNextSequence == 3.0f)
                 timerCo = StartCoroutine(timer());
             else
                 timeBeforeNextSequence = 3.0f;
-            if (type == 7)
-            {
-                if ((allSame || indexOfStop == presses.Count) && !sendsFlashObj[pos].activeSelf)
-                    sendsFlashObj[pos].SetActive(true);
-                pressFlash = StartCoroutine(singleSendsFlash());
-            }
-            else if (type == 6)
+            if (type == 6)
                 pressFlash = StartCoroutine(singleSimonsFlash(simonsLights[pos]));
             else if (type == 5)
                 pressFlash = StartCoroutine(singleTashaFlash(tashaLights[pos]));
@@ -1364,10 +1218,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                     moduleSolved = true;
                     shouldFlash = false;
                     StopCoroutine(pressFlash);
-                    StopCoroutine(sendsFlashCoroutine);
-                    sendsLightsObj.GetComponent<Renderer>().material.color = new Color(0.1f, 0.1f, 0.1f);
-                    foreach (var light in sendsLights)
-                        light.gameObject.SetActive(false);
                     StartCoroutine(solveAnim());
                     GetComponent<KMBombModule>().HandlePass();
                 }
@@ -1403,10 +1253,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                         moduleSolved = true;
                         shouldFlash = false;
                         StopCoroutine(pressFlash);
-                        StopCoroutine(sendsFlashCoroutine);
-                        sendsLightsObj.GetComponent<Renderer>().material.color = new Color(0.1f, 0.1f, 0.1f);
-                        foreach (var light in sendsLights)
-                            light.gameObject.SetActive(false);
                         StartCoroutine(solveAnim());
                         GetComponent<KMBombModule>().HandlePass();
                     }
@@ -1499,10 +1345,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                         shouldFlash = false;
                         StopCoroutine(pressFlash);
                         pressFlash = null;
-                        StopCoroutine(sendsFlashCoroutine);
-                        sendsLightsObj.GetComponent<Renderer>().material.color = new Color(0.1f, 0.1f, 0.1f);
-                        foreach (var light in sendsLights)
-                            light.gameObject.SetActive(false);
                         posOfLastPress = pos;
                         StartCoroutine(solveAnim());
                         GetComponent<KMBombModule>().HandlePass();
@@ -2413,60 +2255,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         }
     }
 
-    private void getCorrectSendsAnswer(int flashNum)
-    {
-        string log = "";
-        for (int i = 0; i < sendsActualAnswer.Length; i++)
-        {
-            if (i == (sendsActualAnswer.Length - 1))
-                log += "and " + sendsColorNames[sendsActualAnswer[i]];
-            else
-                log += sendsColorNames[sendsActualAnswer[i]] + ", ";
-            if (i == 0)
-                colorPositions.Add(flashNum + 1);
-            else
-                colorPositions.Add(0);
-            correctColors.Add(sendsColorNames[sendsActualAnswer[i]]);
-        }
-        Debug.LogFormat("[Simon's Ultimate Showdown #{0}] {1}", moduleId, log);
-    }
-
-    private string getSendsMorse(char letter)
-    {
-        return sendsMorse[letter - 'A'].Select(ch => ch == '.' ? "#" : "###").Join("_");
-    }
-
-    private char getSendsLetter(int paraCount, int wordCount, int letterCount)
-    {
-        var paraIx = paraCount % sendsManualText.Length;
-        var wordIx = 0;
-        for (int w2 = 0; w2 < wordCount; w2++)
-        {
-            wordIx++;
-            if (wordIx >= sendsManualText[paraIx].Length)
-            {
-                wordIx = 0;
-                paraIx = (paraIx + 1) % sendsManualText.Length;
-            }
-        }
-        var letterIx = 0;
-        for (int l2 = 0; l2 < letterCount; l2++)
-        {
-            letterIx++;
-            if (letterIx >= sendsManualText[paraIx][wordIx].Length)
-            {
-                letterIx = 0;
-                wordIx++;
-                if (wordIx >= sendsManualText[paraIx].Length)
-                {
-                    wordIx = 0;
-                    paraIx = (paraIx + 1) % sendsManualText.Length;
-                }
-            }
-        }
-        return sendsManualText[paraIx][wordIx][letterIx];
-    }
-
     private string getStopsCtrlInput()
     {
         string keyword = "";
@@ -2978,42 +2766,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         }
     }
 
-    private void setSendsColor(string color, KMSelectable obj)
-    {
-        if (color.Equals("red"))
-        {
-            obj.gameObject.GetComponent<Renderer>().material = sendsColorMats[0];
-        }
-        else if (color.Equals("blue"))
-        {
-            obj.gameObject.GetComponent<Renderer>().material = sendsColorMats[1];
-        }
-        else if (color.Equals("yellow"))
-        {
-            obj.gameObject.GetComponent<Renderer>().material = sendsColorMats[2];
-        }
-        else if (color.Equals("green"))
-        {
-            obj.gameObject.GetComponent<Renderer>().material = sendsColorMats[3];
-        }
-        else if (color.Equals("magenta"))
-        {
-            obj.gameObject.GetComponent<Renderer>().material = sendsColorMats[4];
-        }
-        else if (color.Equals("cyan"))
-        {
-            obj.gameObject.GetComponent<Renderer>().material = sendsColorMats[5];
-        }
-        else if (color.Equals("white"))
-        {
-            obj.gameObject.GetComponent<Renderer>().material = sendsColorMats[6];
-        }
-        else if (color.Equals("black"))
-        {
-            obj.gameObject.GetComponent<Renderer>().material = sendsColorMats[7];
-        }
-    }
-
     private bool stagesSoundsEqual(int j)
     {
         for (int i = 0; i < 6; i++)
@@ -3055,21 +2807,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             if (i != j)
             {
                 if (stopsRandomPressSounds[i] == stopsRandomPressSounds[j])
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private bool sendsSoundsEqual(int j)
-    {
-        for (int i = 0; i < 6; i++)
-        {
-            if (i != j)
-            {
-                if (sendsRandomPressSounds[i] == sendsRandomPressSounds[j])
                 {
                     return true;
                 }
@@ -3147,7 +2884,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         int sum = 0;
         for (int i = 0; i < bomb.GetModuleNames().Count; i++)
         {
-            if (bomb.GetModuleNames().ElementAt(i).Equals("Simon's Stages") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Stages") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Scrambles") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Screams") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Stops") || bomb.GetModuleNames().ElementAt(i).Equals("Tasha Squeals") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Simons") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Sends"))
+            if (bomb.GetModuleNames().ElementAt(i).Equals("Simon's Stages") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Stages") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Scrambles") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Screams") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Stops") || bomb.GetModuleNames().ElementAt(i).Equals("Tasha Squeals") || bomb.GetModuleNames().ElementAt(i).Equals("Simon Simons"))
             {
                 sum++;
             }
@@ -3173,7 +2910,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         if(tasha && scram)
         {
             usedPriorityList = 1;
-            string[] list1 = { "lime", "white", "orange", "black", "cyan", "green", "pink", "purple", "yellow", "magenta", "red", "blue" };
+            string[] list1 = { "lime", "white", "orange", "cyan", "green", "pink", "purple", "yellow", "magenta", "red", "blue" };
             for (int i = 0; i < list1.Length; i++)
             {
                 if (colorsOfButtons.Contains(list1[i]))
@@ -3185,7 +2922,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         else if(bomb.GetModuleNames().Contains("Simon Sends") || bomb.GetModuleNames().Contains("Simon's On First"))
         {
             usedPriorityList = 2;
-            string[] list2 = { "orange", "pink", "white", "yellow", "blue", "red", "cyan", "black", "purple", "green", "lime", "magenta" };
+            string[] list2 = { "orange", "pink", "white", "yellow", "blue", "red", "cyan", "purple", "green", "lime", "magenta" };
             for (int i = 0; i < list2.Length; i++)
             {
                 if (colorsOfButtons.Contains(list2[i]))
@@ -3197,7 +2934,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         else
         {
             usedPriorityList = 3;
-            string[] list3 = { "magenta", "purple", "pink", "green", "lime", "white", "red", "blue", "cyan", "yellow", "black", "orange" };
+            string[] list3 = { "magenta", "purple", "pink", "green", "lime", "white", "red", "blue", "cyan", "yellow", "orange" };
             for (int i = 0; i < list3.Length; i++)
             {
                 if (colorsOfButtons.Contains(list3[i]))
@@ -3247,12 +2984,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         simonsButtonsObj[3].transform.localPosition = simonsButtonsObj[3].transform.localPosition + Vector3.up * -0.014f;
         simonsButtonsObj[4].transform.localPosition = simonsButtonsObj[4].transform.localPosition + Vector3.up * -0.014f;
         simonsButtonsObj[5].transform.localPosition = simonsButtonsObj[5].transform.localPosition + Vector3.up * -0.014f;
-        sendsButtonsObj[0].transform.localPosition = sendsButtonsObj[0].transform.localPosition + Vector3.up * -1.05f;
-        sendsButtonsObj[1].transform.localPosition = sendsButtonsObj[1].transform.localPosition + Vector3.up * -1.05f;
-        sendsButtonsObj[2].transform.localPosition = sendsButtonsObj[2].transform.localPosition + Vector3.up * -1.05f;
-        sendsButtonsObj[3].transform.localPosition = sendsButtonsObj[3].transform.localPosition + Vector3.up * -1.05f;
-        sendsButtonsObj[4].transform.localPosition = sendsButtonsObj[4].transform.localPosition + Vector3.up * -1.05f;
-        sendsButtonsObj[5].transform.localPosition = sendsButtonsObj[5].transform.localPosition + Vector3.up * -1.05f;
     }
 
     private void ButtonUp(int module, int pos)
@@ -3281,10 +3012,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         {
             simonsButtonsObj[pos].transform.localPosition = simonsButtonsObj[pos].transform.localPosition + Vector3.up * 0.014f;
         }
-        else if (module == 7)
-        {
-            sendsButtonsObj[pos].transform.localPosition = sendsButtonsObj[pos].transform.localPosition + Vector3.up * 1.05f;
-        }
     }
 
     private void ButtonDown(int module, int pos)
@@ -3312,10 +3039,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         else if (module == 6)
         {
             simonsButtonsObj[pos].transform.localPosition = simonsButtonsObj[pos].transform.localPosition + Vector3.up * -0.014f;
-        }
-        else if (module == 7)
-        {
-            sendsButtonsObj[pos].transform.localPosition = sendsButtonsObj[pos].transform.localPosition + Vector3.up * -1.05f;
         }
     }
 
@@ -3395,7 +3118,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         {
             return true;
         }
-        else if (Settings.disableStages && Settings.disableScrambles && Settings.disableScreams && Settings.disableStops && Settings.disableTasha && Settings.disableSimons && Settings.disableSends)
+        else if (Settings.disableStages && Settings.disableScrambles && Settings.disableScreams && Settings.disableStops && Settings.disableTasha && Settings.disableSimons)
         {
             return false;
         }
@@ -3426,10 +3149,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             {
                 possibles.Add(6);
             }
-            if (!Settings.disableSends)
-            {
-                possibles.Add(7);
-            }
             if (possibles.Contains(rand))
             {
                 return false;
@@ -3438,44 +3157,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             {
                 return true;
             }
-        }
-    }
-
-    private IEnumerator SendsBlink()
-    {
-        const float dark = .1f;
-        const float bright = .65f;
-
-        while (true)
-        {
-            if (colorblindActive)
-            {
-                if (sendsMorseR[sendsMorseRPos] != '#' && sendsMorseG[sendsMorseGPos] != '#' && sendsMorseB[sendsMorseBPos] != '#')
-                    cbtexts[6].GetComponent<TextMesh>().text = "K";
-                else if (sendsMorseR[sendsMorseRPos] == '#' && sendsMorseG[sendsMorseGPos] != '#' && sendsMorseB[sendsMorseBPos] != '#')
-                    cbtexts[6].GetComponent<TextMesh>().text = "R";
-                else if (sendsMorseR[sendsMorseRPos] != '#' && sendsMorseG[sendsMorseGPos] == '#' && sendsMorseB[sendsMorseBPos] != '#')
-                    cbtexts[6].GetComponent<TextMesh>().text = "G";
-                else if (sendsMorseR[sendsMorseRPos] != '#' && sendsMorseG[sendsMorseGPos] != '#' && sendsMorseB[sendsMorseBPos] == '#')
-                    cbtexts[6].GetComponent<TextMesh>().text = "B";
-                else if (sendsMorseR[sendsMorseRPos] == '#' && sendsMorseG[sendsMorseGPos] == '#' && sendsMorseB[sendsMorseBPos] != '#')
-                    cbtexts[6].GetComponent<TextMesh>().text = "Y";
-                else if (sendsMorseR[sendsMorseRPos] == '#' && sendsMorseG[sendsMorseGPos] != '#' && sendsMorseB[sendsMorseBPos] == '#')
-                    cbtexts[6].GetComponent<TextMesh>().text = "M";
-                else if (sendsMorseR[sendsMorseRPos] != '#' && sendsMorseG[sendsMorseGPos] == '#' && sendsMorseB[sendsMorseBPos] == '#')
-                    cbtexts[6].GetComponent<TextMesh>().text = "C";
-                else
-                    cbtexts[6].GetComponent<TextMesh>().text = "W";
-            }
-            else
-                cbtexts[6].GetComponent<TextMesh>().text = "";
-            sendsLightsObj.GetComponent<Renderer>().material.color = new Color(sendsMorseR[sendsMorseRPos] == '#' ? bright : dark, sendsMorseG[sendsMorseGPos] == '#' ? bright : dark, sendsMorseB[sendsMorseBPos] == '#' ? bright : dark);
-            foreach (var light in sendsLights)
-                light.color = new Color(sendsMorseR[sendsMorseRPos] == '#' ? 1 : 0, sendsMorseG[sendsMorseGPos] == '#' ? 1 : 0, sendsMorseB[sendsMorseBPos] == '#' ? 1 : 0);
-            yield return new WaitForSeconds(1);
-            sendsMorseRPos = (sendsMorseRPos + 1) % sendsMorseR.Length;
-            sendsMorseGPos = (sendsMorseGPos + 1) % sendsMorseG.Length;
-            sendsMorseBPos = (sendsMorseBPos + 1) % sendsMorseB.Length;
         }
     }
 
@@ -3508,10 +3189,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             else if (modulesOfButtons[localpos] == 6)
             {
                 simonsButtonsObj[localpos].transform.localPosition = simonsButtonsObj[localpos].transform.localPosition + Vector3.up * -0.0007f;
-            }
-            else if (modulesOfButtons[localpos] == 7)
-            {
-                sendsButtonsObj[localpos].transform.localPosition = sendsButtonsObj[localpos].transform.localPosition + Vector3.up * -0.0525f;
             }
             movement++;
         }
@@ -3847,17 +3524,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 yield return new WaitForSeconds(0.25f);
                 if (!shouldFlash) { yield break; }
             }
-            else if (modulesOfButtons[buttonsFlashing[i]] == 7)
-            {
-                sendsFlashObj[buttonsFlashing[i]].SetActive(true);
-                if (!shouldFlash) { yield break; }
-                yield return new WaitForSeconds(0.5f);
-                if (!shouldFlash) { yield break; }
-                sendsFlashObj[buttonsFlashing[i]].SetActive(false);
-                if (!shouldFlash) { yield break; }
-                yield return new WaitForSeconds(0.25f);
-                if (!shouldFlash) { yield break; }
-            }
         }
         if (!shouldFlash) { yield break; }
         yield return new WaitForSeconds(3.0f);
@@ -3901,7 +3567,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             screamsLights[i].enabled = false;
             stopsLights[i].enabled = false;
             tashaLights[i].enabled = false;
-            sendsFlashObj[i].SetActive(false);
             stagesBases[i].SetActive(true);
         }
         StartCoroutine(inCooldown(true));
@@ -3977,15 +3642,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         pressFlash = null;
     }
 
-    private IEnumerator singleSendsFlash()
-    {
-        if (!(indexOfStop == presses.Count) || allSame)
-        {
-            yield return new WaitForSeconds(0.5f);
-        }
-        pressFlash = null;
-    }
-
     //twitch plays
     private string charToColor(char c)
     {
@@ -4033,15 +3689,11 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         {
             return "white";
         }
-        else if (c.Equals('k') || c.Equals('K'))
-        {
-            return "black";
-        }
         return "";
     }
 
     #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"!{0} press <colors> [Presses the specified colors (no full color names)] | !{0} colorblind [Toggles colorblind mode] | Valid colors are R(ed), B(lue), Y(ellow), O(range), M(agenta), G(reen), (p)I(nk), P(urple), L(ime), C(yan), W(hite), and (blac)K";
+    private readonly string TwitchHelpMessage = @"!{0} press <colors> [Presses the specified colors (no full color names)] | !{0} colorblind [Toggles colorblind mode] | Valid colors are R(ed), B(lue), Y(ellow), O(range), M(agenta), G(reen), (p)I(nk), P(urple), L(ime), C(yan), and W(hite)";
     #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string command)
@@ -4087,7 +3739,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
             {
                 yield return "sendtochaterror Please specify which colors need to pressed!";
             }
-            char[] allValids = { 'r', 'b', 'y', 'o', 'm', 'g', 'p', 'l', 'c', 'w', 'i', 'k' };
+            char[] allValids = { 'r', 'b', 'y', 'o', 'm', 'g', 'p', 'l', 'c', 'w', 'i' };
             parameters[1] = parameters[1].ToLower();
             for (int i = 0; i < parameters[1].Length; i++)
             {
@@ -4114,7 +3766,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                     }
                 }
                 possiblePresses = possiblePresses.Shuffle();
-                int rando = UnityEngine.Random.Range(0, possiblePresses.Count);
+                int rando = Random.Range(0, possiblePresses.Count);
                 actualButtons[possiblePresses[rando]].OnInteract();
                 if (stopsCtrlInput)
                 {
@@ -4224,7 +3876,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                         }
                     }
                     possiblePresses = possiblePresses.Shuffle();
-                    int rando = UnityEngine.Random.Range(0, possiblePresses.Count);
+                    int rando = Random.Range(0, possiblePresses.Count);
                     actualButtons[possiblePresses[rando]].OnInteract();
                     if (stopsCtrlInput)
                     {
@@ -4245,7 +3897,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
         public bool disableStops = false;
         public bool disableTasha = false;
         public bool disableSimons = false;
-        public bool disableSends = false;
     }
 
     static Dictionary<string, object>[] TweaksEditorSettings = new Dictionary<string, object>[]
@@ -4284,11 +3935,6 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                 {
                     { "Key", "disableSimons" },
                     { "Text", "Prevents the appearance of any buttons from \"Simon Simons\"" }
-                },
-                new Dictionary<string, object>
-                {
-                    { "Key", "disableSends" },
-                    { "Text", "Prevents the appearance of any buttons from \"Simon Sends\"" }
                 },
             } }
         }

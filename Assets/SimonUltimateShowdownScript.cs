@@ -1306,6 +1306,7 @@ public class SimonUltimateShowdownScript : MonoBehaviour {
                         stopsCtrlInput = true;
                         ctrlInputTimer = StartCoroutine(ctrlInputTimerMethod());
                         StopCoroutine(timerCo);
+                        timeBeforeNextSequence = 3.0f;
                     }
                 }
                 else
